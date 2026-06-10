@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink:       #ff69b4;
+    --pink-dark:  #d63384;
+    --pink-light: #ffb3d9;
+    --pink-pale:  #ffe0f0;
+    --bg:         #000000;
+    --grid-color: rgba(180, 60, 100, 0.18);
+  }
+
+  /* hide default cursor */
+  * { cursor: none !important; }
+
+   body {
+  background-color: #000;
+
+  background-image:
+    radial-gradient(circle at center,
+      rgba(255,120,190,0.9) 1px,
+      transparent 1.2px);
+
+  background-size: 36px 36px;
+
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+  /* ── custom cursor ── */
+  #cursor {
+    position: fixed;
+    width: 14px; height: 14px;
+    background: var(--pink);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px var(--pink), 0 0 16px var(--pink-light);
+    transition: transform 0.05s;
+  }
+
+  /* ── glitter particle ── */
+  .glitter {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    border-radius: 50%;
+    animation: glitter-fade 0.7s ease-out forwards;
+  }
+  @keyframes glitter-fade {
+    0%   { opacity: 1; transform: scale(1) translate(0,0); }
+    100% { opacity: 0; transform: scale(0) translate(var(--dx), var(--dy)); }
+  }
+
+  /* ── spotify bar (top) ── */
+  .spotify-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 44px;
+    background: linear-gradient(90deg, #ff69b4cc, #d63384cc);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,105,180,0.3);
+  }
+  .spotify-widget {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 5px 14px 5px 8px;
+  }
+  .spotify-icon {
+    width: 22px; height: 22px;
+    background: #1db954;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .spotify-icon svg { width: 13px; height: 13px; fill: white; }
+  .spotify-text { font-family: 'Nunito', sans-serif; font-size: 11px; color: white; line-height: 1.4; }
+  .spotify-text span { display: block; font-weight: 700; color: #fff; }
+  .spotify-text small { color: rgba(255,255,255,0.75); font-size: 10px; }
+
+  /* ── main canvas ── */
+  .canvas {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    padding-top: 44px;
+  }
+
+  /* ── clouds ── */
+  .cloud {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+  }
+  .cloud {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
+
+  .cloud img {
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    width: 100%;
+    height: auto;
+  }
+
+  @keyframes drift-a {
+    0%, 100% { transform: translateX(0px); }
+    50%       { transform: translateX(28px); }
+  }
+  @keyframes drift-b {
+    0%, 100% { transform: translateX(0px); }
+    50%       { transform: translateX(-22px); }
+  }
+  @keyframes drift-c {
+    0%, 100% { transform: translateX(0px); }
+    50%       { transform: translateX(18px); }
+  }
+  @keyframes drift-d {
+    0%, 100% { transform: translateX(0px); }
+    50%       { transform: translateX(-30px); }
+  }
+
+  @keyframes float-a {
+    0%,100% { transform: translate(0px,0px); }
+    50% { transform: translate(30px,-12px); }
+  }
+
+  @keyframes float-b {
+    0%,100% { transform: translate(0px,0px); }
+    50% { transform: translate(-25px,10px); }
+  }
+
+  @keyframes float-c {
+    0%,100% { transform: translate(0px,0px); }
+    50% { transform: translate(20px,-8px); }
+  }
+
+  /* ── avatar area ── */
+  .avatar-zone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .avatar-placeholder {
+    width: 180px;
+    height: 180px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+    position: relative;
+
+    border: 3px solid rgba(255,179,217,0.7);
+
+    box-shadow:
+        0 0 15px rgba(255,105,180,.4),
+        0 0 40px rgba(255,105,180,.3);
+
+    animation: avatarFloat 4s ease-in-out infinite;
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+}
+
+.avatar-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.avatar-placeholder:hover {
+    transform: scale(1.08) rotate(-2deg);
+
+    box-shadow:
+        0 0 25px rgba(255,105,180,.8),
+        0 0 60px rgba(255,105,180,.5);
+}
+
+.avatar-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+
+    background:
+        linear-gradient(
+            120deg,
+            transparent,
+            rgba(255,255,255,.25),
+            transparent
+        );
+
+    transform: translateX(-100%);
+    transition: 0.8s;
+}
+
+.avatar-placeholder:hover::before {
+    transform: translateX(100%);
+}
+
+@keyframes avatarFloat {
+    0%,100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+  .avatar-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: rgba(255,105,180,0.55);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .avatar-intro {
+    background: rgba(255, 105, 180, 0.12);
+    border: 1px solid rgba(255, 105, 180, 0.35);
+    box-shadow: 0 4px 24px rgba(255,105,180,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 10px 18px;
+    font-size: 13px;
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    line-height: 1.5;
+  }
+  .avatar-intro strong { color: var(--pink-light); }
+
+  /* ── folder icons ── */
+  .folder {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer !important;
+    transition: transform 0.2s ease;
+  }
+  .folder:hover { transform: translateY(-6px) scale(1.07); }
+  .folder:hover .folder-icon { filter: drop-shadow(0 6px 18px rgba(255,105,180,0.7)); }
+
+  .folder-icon {
+    width: 72px; height: 60px;
+    position: relative;
+    filter: drop-shadow(0 4px 12px rgba(255,105,180,0.35));
+    transition: filter 0.2s;
+  }
+
+  .folder-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #fff;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(255,105,180,0.8);
+    text-align: center;
+  }
+
+  /* folder positions */
+  .folder-profile  { top: 12%;  left: 50%; transform: translateX(-50%); }
+  .folder-contact  { top: 45%;  left: 10%; }
+  .folder-blogs    { bottom: 12%; right: 12%; }
+  .folder-resume   { bottom: 5%;  right: 22%; }
+
+  /* ── sparkle decoration ── */
+  .sparkle {
+    position: absolute;
+    color: rgba(255,255,255,0.6);
+    font-size: 18px;
+    animation: twinkle 2.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50%       { opacity: 1;   transform: scale(1.2); }
+  }
+  body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      rgba(255,105,180,0.15) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,105,180,0.15) 1px,
+      transparent 1px
+    );
+
+  background-size: 120px 120px;
+  opacity: 0.25;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+
+<!-- Spotify bar -->
+<div class="spotify-bar">
+  <div class="spotify-widget">
+    <div class="spotify-icon">
+      <svg viewBox="0 0 168 168"><path d="M84 0C37.6 0 0 37.6 0 84s37.6 84 84 84 84-37.6 84-84S130.4 0 84 0zm38.5 121.2c-1.5 2.5-4.8 3.3-7.3 1.7-20-12.2-45.2-15-74.9-8.2-2.9.7-5.7-1.1-6.4-4-.7-2.9 1.1-5.7 4-6.4 32.5-7.4 60.4-4.2 82.9 9.5 2.5 1.6 3.3 4.9 1.7 7.4zm10.3-22.8c-2 3.2-6.1 4.2-9.3 2.2-22.9-14.1-57.8-18.1-84.9-9.9-3.4 1-7-.9-8-4.3s.9-7 4.3-8c31-9.4 69.6-4.8 96 11.4 3.1 1.9 4.1 6.1 1.9 9.6zm.9-23.7C112.5 57.4 71.2 56 46.9 63.5c-4 1.2-8.3-1-9.5-5.1-1.2-4 1-8.3 5.1-9.5 28-8.5 74.5-6.8 103.9 11.1 3.6 2.1 4.8 6.8 2.6 10.4-2.1 3.5-6.8 4.7-10.3 2.6z"/></svg>
+    </div>
+    <div class="spotify-text">
+      <span id="track-name">Not playing right now</span>
+      <small id="artist-name">Spotify</small>
+    </div>
+  </div>
+</div>
+
+<!-- Main canvas -->
+<div class="canvas" id="canvas">
+
+  <!-- Pixel clouds -->
+
+  <div class="cloud" style="top:15%; left:2%; width:220px; animation: float-a 8s ease-in-out infinite;">
+    <img src="pink-cloud.png" alt="">
+  </div>
+
+  <div class="cloud" style="top:20%; right:4%; width:170px; animation: float-b 10s ease-in-out infinite;">
+    <img src="pink-cloud.png" alt="">
+  </div>
+
+  <div class="cloud" style="top:65%; left:-1%; width:170px; animation: float-c 9s ease-in-out infinite;">
+    <img src="pink-cloud.png" alt="">
+  </div>
+
+  <div class="cloud" style="bottom:5%; left:37%; width:150px; animation: float-b 12s ease-in-out infinite;">
+    <img src="pink-cloud.png" alt="">
+  </div>
+
+  <div class="cloud" style="bottom:25%; right:5%; width:140px; animation: float-a 11s ease-in-out infinite;">
+    <img src="pink-cloud.png" alt="">
+  </div>
+
+  <!-- Sparkles -->
+  <div class="sparkle" style="bottom:18%; right:20%; animation-delay:0.3s; font-size:22px;">✦</div>
+  <div class="sparkle" style="top:55%; left:30%; animation-delay:1.2s; font-size:14px;">✦</div>
+  <div class="sparkle" style="top:20%; left:55%; animation-delay:0.7s; font-size:16px;">✦</div>
+
+  <!-- Folders -->
+  <!-- Profile: top center -->
+  <div class="folder folder-profile" onclick="alert('Profile section coming soon!')">
+    <svg class="folder-icon" viewBox="0 0 72 60" fill="none">
+      <path d="M4 16C4 13.8 5.8 12 8 12H28L34 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V16Z" fill="#ff69b4"/>
+      <path d="M4 22C4 19.8 5.8 18 8 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V22Z" fill="#ffb3d9"/>
+      <rect x="22" y="30" width="28" height="18" rx="2" fill="#87ceeb" opacity="0.8"/>
+    </svg>
+    <span class="folder-label">Profile</span>
+  </div>
+
+  <!-- Contact: left middle -->
+  <div class="folder folder-contact" onclick="alert('Contact section coming soon!')">
+    <svg class="folder-icon" viewBox="0 0 72 60" fill="none">
+      <path d="M4 16C4 13.8 5.8 12 8 12H28L34 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V16Z" fill="#ff69b4"/>
+      <path d="M4 22C4 19.8 5.8 18 8 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V22Z" fill="#ffb3d9"/>
+      <rect x="22" y="30" width="28" height="18" rx="2" fill="#87ceeb" opacity="0.8"/>
+    </svg>
+    <span class="folder-label">Contact</span>
+  </div>
+
+  <!-- Blogs: bottom right -->
+  <div class="folder folder-blogs" onclick="alert('Blogs section coming soon!')">
+    <svg class="folder-icon" viewBox="0 0 72 60" fill="none">
+      <path d="M4 16C4 13.8 5.8 12 8 12H28L34 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V16Z" fill="#d63384"/>
+      <path d="M4 22C4 19.8 5.8 18 8 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V22Z" fill="#ffb3d9"/>
+      <rect x="22" y="30" width="28" height="18" rx="2" fill="#87ceeb" opacity="0.8"/>
+    </svg>
+    <span class="folder-label">Blogs</span>
+  </div>
+
+  <!-- Resume: bottom right, slightly offset -->
+  <div class="folder folder-resume" onclick="alert('Resume coming soon!')">
+    <svg class="folder-icon" viewBox="0 0 72 60" fill="none">
+      <path d="M4 16C4 13.8 5.8 12 8 12H28L34 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V16Z" fill="#d63384"/>
+      <path d="M4 22C4 19.8 5.8 18 8 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V22Z" fill="#ffb3d9"/>
+      <rect x="22" y="30" width="28" height="18" rx="2" fill="#87ceeb" opacity="0.8"/>
+    </svg>
+    <span class="folder-label">Resume</span>
+  </div>
+
+  <!-- Avatar center -->
+  <div class="avatar-zone">
+    
+    <div class="avatar-placeholder">
+    <img src="avatar.png" alt="Pavithra">
+</div>
+    <div class="avatar-intro">
+      hi, i'm <strong>pavithra</strong> <br>
+      <span style="font-size:11px; color:rgba(255,255,255,0.6); font-weight:400;">s7 computer science student</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── custom cursor ──
+  const cursor = document.getElementById('cursor');
+  let mx = -100, my = -100;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+    spawnGlitter(mx, my);
+  });
+
+  // ── glitter trail ──
+  const COLORS = ['#ff69b4','#ffb3d9','#fff','#ffd700','#ff1493','#ffe0f0','#c084fc'];
+  const SHAPES = ['✦','✧','·','*','⋆'];
+  let lastGlitter = 0;
+
+  function spawnGlitter(x, y) {
+    const now = Date.now();
+    if (now - lastGlitter < 30) return;
+    lastGlitter = now;
+
+    const count = 2 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('div');
+      el.classList.add('glitter');
+      const size = 5 + Math.random() * 8;
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      const shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+      const dx = (Math.random() - 0.5) * 30;
+      const dy = (Math.random() - 0.5) * 30;
+      const delay = Math.random() * 0.1;
+
+      el.textContent = shape;
+      el.style.cssText = `
+        left: ${x}px; top: ${y}px;
+        font-size: ${size + 4}px;
+        color: ${color};
+        text-shadow: 0 0 6px ${color};
+        background: transparent;
+        width: auto; height: auto;
+        border-radius: 0;
+        --dx: ${dx}px; --dy: ${dy}px;
+        animation-delay: ${delay}s;
+        animation-duration: ${0.5 + Math.random() * 0.4}s;
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 900);
+    }
+  }
+
+  // ── cursor click pulse ──
+  document.addEventListener('mousedown', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1.6)';
+    cursor.style.background = '#fff';
+  });
+  document.addEventListener('mouseup', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+    cursor.style.background = 'var(--pink)';
+  });
+  
+</script>
+</body>
+</html>
