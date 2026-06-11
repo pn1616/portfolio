@@ -328,7 +328,86 @@
   background-size: 120px 120px;
   opacity: 0.25;
 }
+@media (max-width: 768px) {
+  .cloud {
+    display: none;
+  }
+}
+@media (max-width:768px){
+  .avatar-placeholder{
+    width:150px;
+    height:150px;
+  }
+}
+@media (max-width:768px){
 
+  .folder{
+    position:relative;
+    margin:0;
+  }
+
+   .folder-container{
+    display:grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap:40px 20px;
+
+    width:100%;
+    max-width:320px;
+
+    margin-top:50px;
+    justify-items:center;
+  }
+   .folder-profile,
+  .folder-contact,
+  .folder-blogs,
+  .folder-resume{
+
+    top:auto !important;
+    left:auto !important;
+    right:auto !important;
+    bottom:auto !important;
+    transform:none !important;
+  }
+
+}
+@media (max-width:768px){
+
+  .avatar-zone{
+    position:relative;
+    top:auto;
+    left:auto;
+    transform:none;
+
+    padding-top:80px;
+    margin:auto;
+  }
+
+  .canvas{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height:auto;
+    padding-bottom:50px;
+  }
+}
+@media (max-width:768px){
+
+  .spotify-bar{
+    justify-content:center;
+    padding:0 10px;
+  }
+
+  .spotify-widget{
+    width:100%;
+    max-width:250px;
+  }
+
+  .spotify-text{
+    font-size:10px;
+  }
+}
 </style>
 </head>
 <body>
@@ -378,9 +457,19 @@
   <div class="sparkle" style="bottom:18%; right:20%; animation-delay:0.3s; font-size:22px;">✦</div>
   <div class="sparkle" style="top:55%; left:30%; animation-delay:1.2s; font-size:14px;">✦</div>
   <div class="sparkle" style="top:20%; left:55%; animation-delay:0.7s; font-size:16px;">✦</div>
-
+<div class="avatar-zone">
+    
+    <div class="avatar-placeholder">
+    <img src="avatar.png" alt="Pavithra">
+</div>
+    <div class="avatar-intro">
+      hi, i'm <strong>pavithra</strong> <br>
+      <span style="font-size:11px; color:rgba(255,255,255,0.6); font-weight:400;">computer science student</span>
+    </div>
+  </div>
   <!-- Folders -->
   <!-- Profile: top center -->
+   <div class="folder-container">
   <div class="folder folder-profile" onclick="window.location.href='profile.html'">
     <svg class="folder-icon" viewBox="0 0 72 60" fill="none">
       <path d="M4 16C4 13.8 5.8 12 8 12H28L34 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V16Z" fill="#ff69b4"/>
@@ -411,28 +500,21 @@
   </div>
 
   <!-- Resume: bottom right, slightly offset -->
-  <div class="folder folder-resume" onclick="alert('Resume coming soon!')">
-    <svg class="folder-icon" viewBox="0 0 72 60" fill="none">
+<div class="folder folder-resume"
+     onclick="window.open('https://amritauniv-my.sharepoint.com/:b:/g/personal/am_sc_u4cse23141_am_students_amrita_edu/IQB0vSO4BWhFR6Z4LEsX6MWcAfxeNyTTREb8sBHQYYpwsYU?e=THWSHJ', '_blank', 'noopener,noreferrer')">    <svg class="folder-icon" viewBox="0 0 72 60" fill="none">
       <path d="M4 16C4 13.8 5.8 12 8 12H28L34 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V16Z" fill="#d63384"/>
       <path d="M4 22C4 19.8 5.8 18 8 18H64C66.2 18 68 19.8 68 22V52C68 54.2 66.2 56 64 56H8C5.8 56 4 54.2 4 52V22Z" fill="#ffb3d9"/>
       <rect x="22" y="30" width="28" height="18" rx="2" fill="#87ceeb" opacity="0.8"/>
     </svg>
     <span class="folder-label">Resume</span>
   </div>
-
-  <!-- Avatar center -->
-  <div class="avatar-zone">
-    
-    <div class="avatar-placeholder">
-    <img src="avatar.png" alt="Pavithra">
-</div>
-    <div class="avatar-intro">
-      hi, i'm <strong>pavithra</strong> <br>
-      <span style="font-size:11px; color:rgba(255,255,255,0.6); font-weight:400;">computer science student</span>
-    </div>
   </div>
 
+  <!-- Avatar center -->
+  
+
 </div>
+
 
 <script>
   // ── custom cursor ──
@@ -497,4 +579,5 @@
   
 </script>
 </body>
+
 </html>

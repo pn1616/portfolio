@@ -85,8 +85,6 @@ body::before {
 .spotify-text span { display:block; font-weight:700; }
 .spotify-text small { color:rgba(255,255,255,0.75); font-size:10px; }
 
-/* neon wires */
-.neon-wire { position:fixed; pointer-events:none; z-index:0; }
 
 /* page */
 .page {
@@ -253,11 +251,188 @@ body::before {
   50%      { opacity:1;   transform:scale(1.2); }
 }
 
-/* cloud */
-.cloud { position:fixed; pointer-events:none; z-index:0; opacity:0.55; }
-@keyframes float-b {
-  0%,100% { transform:translate(0,0); }
-  50%     { transform:translate(-22px,10px); }
+/* clouds */
+.cloud{
+  position:fixed;
+  pointer-events:none;
+  z-index:0;
+  opacity:.75;
+
+  filter:
+    drop-shadow(0 0 12px rgba(255,182,219,.25));
+}
+
+.cloud img{
+  width:100%;
+  height:auto;
+  display:block;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+}
+
+@keyframes float-a{
+  0%,100%{
+    transform:translate(0px,0px);
+  }
+  50%{
+    transform:translate(30px,-12px);
+  }
+}
+
+@keyframes float-b{
+  0%,100%{
+    transform:translate(0px,0px);
+  }
+  50%{
+    transform:translate(-25px,10px);
+  }
+}
+
+@keyframes float-c{
+  0%,100%{
+    transform:translate(0px,0px);
+  }
+  50%{
+    transform:translate(20px,-8px);
+  }
+}
+/* ─────────────────────────────
+   MOBILE RESPONSIVE
+───────────────────────────── */
+
+@media (max-width:768px){
+
+  /* remove decorative clouds */
+  .cloud{
+    display:none;
+  }
+
+  /* remove custom cursor */
+  #cursor,
+  .glitter{
+    display:none;
+  }
+
+  /* page spacing */
+  .page{
+    padding:60px 10px 20px;
+  }
+
+  .page-title{
+    font-size:9px;
+    text-align:center;
+    letter-spacing:1px;
+  }
+
+  /* spotify bar */
+  .spotify-bar{
+    padding:0 10px;
+  }
+
+  .spotify-widget{
+    max-width:240px;
+  }
+
+  .spotify-text{
+    font-size:10px;
+  }
+
+  .back-btn{
+    font-size:6px;
+    padding:5px 8px;
+  }
+
+  /* explorer window */
+  .explorer-window{
+    width:100%;
+    max-width:100%;
+  }
+
+  /* stack sidebar above contacts */
+  .win-body{
+    flex-direction:column;
+  }
+
+  .win-sidebar{
+    width:100%;
+    border-right:none;
+    border-bottom:1px solid #c87aa0;
+
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+
+    padding:10px;
+  }
+
+  .sidebar-item{
+    padding:6px 10px;
+    font-size:16px;
+  }
+
+  /* address bar wraps */
+  .win-addressbar{
+    flex-wrap:wrap;
+  }
+
+  .win-addressbar label{
+    width:100%;
+  }
+
+  .address-box{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:13px;
+  }
+
+  /* contact cards */
+  .contact-row{
+
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+
+    gap:10px;
+
+    padding:18px 12px;
+  }
+
+  .contact-info{
+    width:100%;
+  }
+
+  .contact-handle{
+    font-size:20px;
+    word-break:break-word;
+  }
+
+  .contact-meta{
+    font-size:16px;
+  }
+
+  .platform-icon{
+    width:52px;
+    height:52px;
+  }
+
+  .contact-action{
+    font-size:7px;
+    padding:8px 12px;
+  }
+
+  /* scrollbar strip */
+  .win-scrollbar-h{
+    height:10px;
+  }
+
+  /* fewer sparkles */
+  .sparkle{
+    opacity:.5;
+  }
+
 }
 
 </style>
@@ -266,30 +441,23 @@ body::before {
 
 <div id="cursor"></div>
 
-<!-- neon wires -->
-<div class="neon-wire" style="top:44px;left:0;">
-  <svg width="110" height="90" viewBox="0 0 110 90" fill="none">
-    <path d="M0 18 H55 V72 H110" stroke="#ff2d9b" stroke-width="2" opacity="0.5"/>
-    <path d="M0 18 H55 V72 H110" stroke="#ff2d9b" stroke-width="6" opacity="0.1"/>
-  </svg>
-</div>
-<div class="neon-wire" style="bottom:0;right:0;">
-  <svg width="90" height="70" viewBox="0 0 90 70" fill="none">
-    <path d="M90 52 H36 V0" stroke="#ff2d9b" stroke-width="2" opacity="0.5"/>
-    <path d="M90 52 H36 V0" stroke="#ff2d9b" stroke-width="6" opacity="0.1"/>
-  </svg>
+
+
+<!-- floating pixel clouds -->
+
+<div class="cloud"
+     style="top:14%; left:4%; width:190px; animation:float-a 9s ease-in-out infinite;">
+  <img src="pink-cloud.png" alt="">
 </div>
 
-<!-- ambient cloud -->
-<div class="cloud" style="top:58%;right:2%;width:150px;animation:float-b 11s ease-in-out infinite;">
-  <svg width="150" height="70" viewBox="0 0 38 18">
-    <rect x="2" y="12" width="34" height="4" fill="#f48cb1"/>
-    <rect x="2" y="8"  width="10" height="6" fill="#f9b8d2"/>
-    <rect x="10" y="6" width="12" height="8" fill="#fad0e4"/>
-    <rect x="20" y="4" width="12" height="10" fill="#fce8f2"/>
-    <rect x="30" y="8" width="6"  height="6" fill="#f9b8d2"/>
-    <rect x="12" y="2" width="10" height="4" fill="#fce8f2"/>
-  </svg>
+<div class="cloud"
+     style="top:18%; right:4%; width:170px; animation:float-b 11s ease-in-out infinite;">
+  <img src="pink-cloud.png" alt="">
+</div>
+
+<div class="cloud"
+     style="bottom:12%; right:5%; width:150px; animation:float-a 10s ease-in-out infinite;">
+  <img src="pink-cloud.png" alt="">
 </div>
 
 <!-- sparkles -->

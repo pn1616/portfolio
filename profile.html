@@ -194,10 +194,26 @@ body::before {
 }
 
 /* window positions */
-.win-hello   { top: 80px;  right: 4%; }
-.win-training { top: 430px; right: 4%; }
-.win-skills  { top: 560px; left: 50%; transform: translateX(-20%); }
-.win-extra   { top: 430px; left: 3%; }
+.win-hello {
+  top: 90px;
+  right: 3%;
+}
+
+.win-extra {
+  top: 520px;
+  left: 3%;
+}
+
+.win-training {
+  top: 520px;
+  right: 3%;
+}
+
+.win-skills {
+  top: 700px;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
 /* sparkle */
 .sparkle {
@@ -214,6 +230,58 @@ body::before {
 
 /* page bottom spacer */
 .spacer { height: 60px; }
+@media (max-width:768px){
+
+  .connectors{
+    display:none;
+  }
+
+  .neon-wire{
+    display:none;
+  }
+
+   .console-wrap{
+    position:relative;
+
+    left:33%;
+
+    transform:translateX(-50%);
+
+    width:min(90vw,320px);
+
+    margin:-15px;
+  }
+
+
+  .retro-win{
+    position:relative;
+
+    top:auto !important;
+    left:auto !important;
+    right:auto !important;
+
+    transform:none !important;
+
+    width:min(92vw,340px);
+
+    margin:20px auto;
+  }
+
+  .scene{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    padding-top:70px;
+    padding-bottom:40px;
+  }
+
+  .win-hello{ order:1; }
+  .win-training{ order:2; }
+  .win-skills{ order:3; }
+  .win-extra{ order:4; }
+
+}
 
 </style>
 </head>
@@ -444,36 +512,95 @@ function drawLines() {
   // console bottom-center
   const consBottom = { x: cons.x, y: cons.bottom - 20 };
 
-  const connections = [
-    // console bottom → right → hello left-mid
-    { x1: consBottom.x, y1: consBottom.y,
-      x2: hello.left,   y2: hello.top + 30,
-      mid: 'right-then-up' },
-    // console bottom → right → training left-mid
-    { x1: consBottom.x, y1: consBottom.y,
-      x2: training.left, y2: training.top + 20,
-      mid: 'right-then-down' },
-    // console bottom → down → skills top-mid
-    { x1: consBottom.x, y1: consBottom.y,
-      x2: skills.left + skills.width/2, y2: skills.top,
-      mid: 'straight-down' },
-    // console bottom → left → extra right-mid
-    { x1: consBottom.x, y1: consBottom.y,
-      x2: extra.right,   y2: extra.top + 20,
-      mid: 'left-then-down' },
-  ];
+  const consoleTop = {
+  x: cons.x,
+  y: cons.top + 40
+};
+
+const consoleBottom = {
+  x: cons.x,
+  y: cons.bottom - 15
+};
+
+const connections = [
+
+  // HELLO
+  {
+    x1: consoleTop.x,
+    y1: consoleTop.y,
+    x2: hello.left,
+    y2: hello.top + 40,
+    type: "hello"
+  },
+
+  // WEAPONS
+  {
+    x1: consoleBottom.x,
+    y1: consoleBottom.y,
+    x2: extra.right,
+    y2: extra.top + 40,
+    type: "left"
+  },
+
+  // TRAINING
+  {
+    x1: consoleBottom.x,
+    y1: consoleBottom.y,
+    x2: training.left,
+    y2: training.top + 40,
+    type: "right"
+  },
+
+  // SKILLS
+  {
+    x1: consoleBottom.x,
+    y1: consoleBottom.y,
+    x2: skills.left + skills.width / 2,
+    y2: skills.top,
+    type: "down"
+  }
+];
 
   connections.forEach(c => {
     const midX = (c.x1 + c.x2) / 2;
     const midY = (c.y1 + c.y2) / 2;
 
     let d;
-    if (c.mid === 'straight-down') {
-      d = `M${c.x1},${c.y1} L${c.x2},${c.y2}`;
-    } else {
-      // elbow: go vertical then horizontal
-      d = `M${c.x1},${c.y1} L${c.x1},${c.y2} L${c.x2},${c.y2}`;
-    }
+    if (c.type === "down") {
+
+  d = `
+    M${c.x1},${c.y1}
+    L${c.x1},${c.y2}
+    L${c.x2},${c.y2}
+  `;
+
+} else if (c.type === "hello") {
+
+  d = `
+    M${c.x1},${c.y1}
+    H${c.x1 + 180}
+    V${c.y2}
+    H${c.x2}
+  `;
+
+} else if (c.type === "left") {
+
+  d = `
+    M${c.x1},${c.y1}
+    V${c.y1 + 70}
+    H${c.x2}
+    V${c.y2}
+  `;
+
+} else if (c.type === "right") {
+
+  d = `
+    M${c.x1},${c.y1}
+    V${c.y1 + 70}
+    H${c.x2}
+    V${c.y2}
+  `;
+}
 
     // glow layer
     const glow = document.createElementNS('http://www.w3.org/2000/svg','path');

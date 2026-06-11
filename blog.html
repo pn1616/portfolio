@@ -563,6 +563,143 @@ body::before {
   0%,100% { transform: translate(0px,0px); }
   50% { transform: translate(-25px,10px); }
 }
+/* ─────────────────────────────
+   MOBILE RESPONSIVE
+───────────────────────────── */
+
+@media (max-width:768px){
+
+  /* remove clouds */
+  .cloud{
+    display:none;
+  }
+
+  /* remove custom cursor */
+  #cursor,
+  .glitter{
+    display:none;
+  }
+
+  /* spotify bar */
+  .spotify-bar{
+    padding:0 10px;
+  }
+
+  .spotify-widget{
+    max-width:240px;
+  }
+
+  .spotify-text{
+    font-size:10px;
+  }
+
+  .back-btn{
+    font-size:6px;
+    padding:5px 8px;
+  }
+
+  /* page spacing */
+  .page{
+    padding:60px 10px 20px;
+  }
+
+  .page-title{
+    font-size:9px;
+    text-align:center;
+  }
+
+  /* explorer window */
+  .explorer-window{
+    width:100%;
+    max-width:100%;
+  }
+
+  /* stack sidebar above file list */
+  .win-body{
+    flex-direction:column;
+  }
+
+  .win-sidebar{
+    width:100%;
+    border-right:none;
+    border-bottom:1px solid #c87aa0;
+
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:8px;
+
+    padding:10px;
+  }
+
+  .sidebar-item{
+    padding:6px 10px;
+    font-size:16px;
+  }
+
+  /* address bar wraps */
+  .win-addressbar{
+    flex-wrap:wrap;
+  }
+
+  .win-addressbar label{
+    width:100%;
+  }
+
+  .address-box{
+    min-width:0;
+    font-size:13px !important;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  /* file rows */
+  .file-row{
+    flex-wrap:wrap;
+    gap:6px;
+    padding:10px;
+  }
+
+  .file-name{
+    min-width:auto;
+    width:100%;
+    font-size:18px;
+  }
+
+  .file-meta{
+    margin-left:0;
+    width:100%;
+    font-size:14px;
+  }
+
+  .file-tag{
+    font-size:13px;
+  }
+
+  /* post popup */
+  .post-window{
+    max-width:95vw;
+    max-height:85vh;
+  }
+
+  .post-body{
+    padding:16px;
+  }
+
+  .post-body h2{
+    font-size:9px;
+  }
+
+  .post-body p{
+    font-size:18px;
+  }
+
+  /* sparkles less distracting */
+  .sparkle{
+    opacity:.5;
+  }
+}
 
 </style>
 </head>
