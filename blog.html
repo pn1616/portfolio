@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>blogs</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --pink:       #ff69b4;
+  --pink-dark:  #d63384;
+  --pink-light: #ffb3d9;
+  --bg:         #000000;
+  --win-bg:     #f9c8e0;
+  --win-sidebar:#f0a8cc;
+  --win-title:  #c2185b;
+  --win-border: #d63384;
+  --neon:       #ff2d9b;
+}
+
+* { cursor: none !important; }
+
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at center, rgba(255,120,190,0.9) 1px, transparent 1.2px);
+  background-size: 36px 36px;
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,105,180,0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,105,180,0.15) 1px, transparent 1px);
+  background-size: 120px 120px;
+  opacity: 0.25;
+}
+
+/* ── cursor ── */
+#cursor {
+  position: fixed;
+  width: 14px; height: 14px;
+  background: var(--pink);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px var(--pink), 0 0 16px var(--pink-light);
+  transition: transform 0.05s;
+}
+.glitter {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  animation: glitter-fade 0.7s ease-out forwards;
+}
+@keyframes glitter-fade {
+  0%   { opacity: 1; transform: scale(1) translate(0,0); }
+  100% { opacity: 0; transform: scale(0) translate(var(--dx), var(--dy)); }
+}
+
+/* ── spotify bar ── */
+.spotify-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 44px;
+  background: linear-gradient(90deg, #ff69b4cc, #d63384cc);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,105,180,0.3);
+}
+.back-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #fff;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 6px;
+  padding: 6px 12px;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.back-btn:hover { background: rgba(0,0,0,0.5); }
+.spotify-widget {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 5px 14px 5px 8px;
+}
+.spotify-icon {
+  width: 22px; height: 22px;
+  background: #1db954;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.spotify-icon svg { width: 13px; height: 13px; fill: white; }
+.spotify-text { font-family: 'Nunito', sans-serif; font-size: 11px; color: white; line-height: 1.4; }
+.spotify-text span { display: block; font-weight: 700; }
+.spotify-text small { color: rgba(255,255,255,0.75); font-size: 10px; }
+
+/* ── neon wire decorations ── */
+.neon-wire {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+}
+.neon-wire svg { display: block; }
+
+/* ── page layout ── */
+.page {
+  padding: 64px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── page title ── */
+.page-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 13px;
+  color: var(--pink);
+  text-shadow: 0 0 14px rgba(255,105,180,0.7), 0 0 30px rgba(255,105,180,0.3);
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+
+/* ── windows XP explorer window ── */
+.explorer-window {
+  width: 100%;
+  max-width: 820px;
+  border: 2px solid var(--win-border);
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px #000,
+    0 0 30px rgba(255,45,155,0.45),
+    0 0 60px rgba(255,45,155,0.2),
+    4px 4px 0 rgba(0,0,0,0.6);
+  position: relative;
+}
+
+/* title bar */
+.win-titlebar {
+  background: linear-gradient(90deg, var(--win-title) 0%, #e91e8c 40%, #c2185b 100%);
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #a01060;
+}
+.win-title-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.win-folder-icon {
+  width: 16px; height: 13px;
+  position: relative;
+}
+.win-folder-icon::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 7px; height: 4px;
+  background: #ffd700;
+  border-radius: 1px 1px 0 0;
+}
+.win-folder-icon::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 0;
+  width: 16px; height: 10px;
+  background: #ffc107;
+  border-radius: 0 1px 1px 1px;
+}
+.win-title-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+}
+.win-controls {
+  display: flex;
+  gap: 3px;
+}
+.win-btn {
+  width: 16px; height: 14px;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255,255,255,0.15);
+  font-family: monospace;
+}
+.win-btn:last-child { background: #c0392b; }
+
+/* menu bar */
+.win-menubar {
+  background: var(--win-bg);
+  border-bottom: 1px solid #c87aa0;
+  padding: 2px 8px;
+  display: flex;
+  gap: 16px;
+}
+.win-menubar span {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #333;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.win-menubar span:first-letter { text-decoration: none; }
+
+/* address bar */
+.win-addressbar {
+  background: var(--win-bg);
+  border-bottom: 1px solid #c87aa0;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.win-addressbar label {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #444;
+  white-space: nowrap;
+}
+.win-addressbar .address-box {
+  flex: 1;
+  background: white;
+  border: 1px solid #b06080;
+  border-radius: 1px;
+  padding: 2px 6px;
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.address-folder-icon {
+  width: 12px; height: 10px;
+  position: relative; flex-shrink: 0;
+}
+.address-folder-icon::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 5px; height: 3px;
+  background: #ffc107;
+  border-radius: 1px 1px 0 0;
+}
+.address-folder-icon::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 0;
+  width: 12px; height: 8px;
+  background: #ffd740;
+  border-radius: 0 1px 1px 1px;
+}
+.win-addressbar .dropdown-arrow {
+  width: 18px; height: 22px;
+  background: #e0b0c8;
+  border: 1px solid #b06080;
+  border-radius: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: #333;
+}
+
+/* main content area */
+.win-body {
+  display: flex;
+  background: var(--win-bg);
+  min-height: 380px;
+}
+
+/* sidebar */
+.win-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--win-sidebar);
+  border-right: 1px solid #c87aa0;
+  padding: 12px 0;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  font-family: 'VT323', monospace;
+  font-size: 17px;
+  color: #222;
+  transition: background 0.15s;
+}
+.sidebar-item.active {
+  background: rgba(255,105,180,0.25);
+  font-weight: 700;
+  color: #880044;
+}
+.sidebar-item:hover { background: rgba(255,105,180,0.15); }
+.sidebar-icon {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* file list */
+.win-filelist {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #e879b0 #f9c8e0;
+}
+.win-filelist::-webkit-scrollbar { width: 14px; }
+.win-filelist::-webkit-scrollbar-track { background: #f9c8e0; border-left: 1px solid #c87aa0; }
+.win-filelist::-webkit-scrollbar-thumb { background: #d63384; border: 2px solid #f9c8e0; border-radius: 2px; }
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 16px;
+  border-bottom: 1px solid rgba(200,120,160,0.2);
+  transition: background 0.15s;
+  text-decoration: none;
+  color: inherit;
+}
+.file-row:hover {
+  background: rgba(255,105,180,0.2);
+}
+.file-row:hover .file-name { text-decoration: underline; color: #880044; }
+
+.file-icon {
+  width: 26px; height: 30px;
+  flex-shrink: 0;
+  position: relative;
+}
+/* document page shape */
+.file-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #fffde7;
+  border: 1px solid #bba;
+  border-radius: 1px 4px 1px 1px;
+  clip-path: polygon(0 0, 72% 0, 100% 28%, 100% 100%, 0 100%);
+}
+/* dog-ear */
+.file-icon::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 8px; height: 8px;
+  background: #e0d9a0;
+  border-left: 1px solid #bba;
+  border-bottom: 1px solid #bba;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+/* lines on file */
+.file-lines {
+  position: absolute;
+  top: 12px; left: 4px; right: 4px;
+  display: flex; flex-direction: column; gap: 3px;
+  pointer-events: none;
+}
+.file-lines span {
+  display: block;
+  height: 1.5px;
+  background: rgba(100,80,60,0.35);
+  border-radius: 1px;
+}
+.file-lines span:nth-child(3) { width: 60%; }
+
+.file-name {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: #111;
+  min-width: 160px;
+}
+.file-tag {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #c2185b;
+  background: rgba(255,105,180,0.18);
+  border: 1px solid rgba(255,105,180,0.3);
+  border-radius: 3px;
+  padding: 1px 7px;
+  margin-left: 4px;
+}
+.file-meta {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #555;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* scrollbar at bottom */
+.win-scrollbar-h {
+  height: 14px;
+  background: #f0a8cc;
+  border-top: 1px solid #c87aa0;
+}
+
+/* ── blog post overlay ── */
+.post-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(2px);
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px 20px;
+}
+.post-overlay.open { display: flex; }
+
+.post-window {
+  width: 100%;
+  max-width: 680px;
+  max-height: 80vh;
+  border: 2px solid var(--win-border);
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(255,45,155,0.5), 4px 4px 0 rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+}
+.post-titlebar {
+  background: linear-gradient(90deg, #c2185b, #e91e8c);
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.post-title-left {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #fff;
+}
+.post-close {
+  width: 16px; height: 14px;
+  background: #c0392b;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  font-family: monospace;
+}
+.post-body {
+  background: #fff9fd;
+  padding: 24px 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+.post-body h2 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: #c2185b;
+  margin-bottom: 16px;
+  line-height: 1.8;
+}
+.post-body .post-date {
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  color: #888;
+  margin-bottom: 16px;
+  display: block;
+}
+.post-body .post-tags {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.post-body .post-tag {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  background: rgba(255,105,180,0.15);
+  border: 1px solid rgba(255,105,180,0.4);
+  color: #c2185b;
+  border-radius: 3px;
+  padding: 1px 8px;
+}
+.post-body p {
+  font-family: 'VT323', monospace;
+  font-size: 19px;
+  color: #222;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+.post-body::-webkit-scrollbar { width: 12px; }
+.post-body::-webkit-scrollbar-track { background: #f9c8e0; }
+.post-body::-webkit-scrollbar-thumb { background: #d63384; border-radius: 2px; }
+
+/* ── sparkles ── */
+.sparkle {
+  position: fixed;
+  color: rgba(255,255,255,0.6);
+  font-size: 18px;
+  animation: twinkle 2.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.2); }
+}
+
+/* ── clouds ── */
+.cloud {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+.cloud img{
+  width:100%;
+  height:auto;
+  display:block;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+}
+
+.cloud{
+  opacity:.75;
+  filter:
+    drop-shadow(0 0 12px rgba(255,182,219,.25));
+}
+@keyframes float-a {
+  0%,100% { transform: translate(0px,0px); }
+  50% { transform: translate(30px,-12px); }
+}
+@keyframes float-b {
+  0%,100% { transform: translate(0px,0px); }
+  50% { transform: translate(-25px,10px); }
+}
+
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<
+
+<!-- floating pixel clouds -->
+
+<div class="cloud"
+     style="top:14%; left:4%; width:190px; animation: float-a 9s ease-in-out infinite;">
+  <img src="pink-cloud.png" alt="">
+</div>
+
+<div class="cloud"
+     style="top:18%; right:4%; width:170px; animation: float-b 11s ease-in-out infinite;">
+  <img src="pink-cloud.png" alt="">
+</div>
+
+<div class="cloud"
+     style="bottom:12%; right:5%; width:150px; animation: float-a 10s ease-in-out infinite;">
+  <img src="pink-cloud.png" alt="">
+</div>
+
+<!-- sparkles -->
+<div class="sparkle" style="bottom:15%; right:22%; animation-delay:0.3s;">✦</div>
+<div class="sparkle" style="top:60%; left:4%; animation-delay:1.2s; font-size:14px;">✦</div>
+
+<!-- Spotify bar -->
+<div class="spotify-bar">
+  <a href="index.html" class="back-btn">← BACK</a>
+  <div class="spotify-widget">
+    <div class="spotify-icon">
+      <svg viewBox="0 0 168 168"><path d="M84 0C37.6 0 0 37.6 0 84s37.6 84 84 84 84-37.6 84-84S130.4 0 84 0zm38.5 121.2c-1.5 2.5-4.8 3.3-7.3 1.7-20-12.2-45.2-15-74.9-8.2-2.9.7-5.7-1.1-6.4-4-.7-2.9 1.1-5.7 4-6.4 32.5-7.4 60.4-4.2 82.9 9.5 2.5 1.6 3.3 4.9 1.7 7.4zm10.3-22.8c-2 3.2-6.1 4.2-9.3 2.2-22.9-14.1-57.8-18.1-84.9-9.9-3.4 1-7-.9-8-4.3s.9-7 4.3-8c31-9.4 69.6-4.8 96 11.4 3.1 1.9 4.1 6.1 1.9 9.6zm.9-23.7C112.5 57.4 71.2 56 46.9 63.5c-4 1.2-8.3-1-9.5-5.1-1.2-4 1-8.3 5.1-9.5 28-8.5 74.5-6.8 103.9 11.1 3.6 2.1 4.8 6.8 2.6 10.4-2.1 3.5-6.8 4.7-10.3 2.6z"/></svg>
+    </div>
+    <div class="spotify-text">
+      <span id="track-name">Not playing right now</span>
+      <small id="artist-name">Spotify</small>
+    </div>
+  </div>
+</div>
+
+<!-- Page -->
+<div class="page">
+  <h1 class="page-title">blogs ig</h1>
+
+  <!-- Explorer Window -->
+  <div class="explorer-window">
+
+    <!-- Title bar -->
+    <div class="win-titlebar">
+      <div class="win-title-left">
+        <div class="win-folder-icon"></div>
+        <span class="win-title-text">File Explorer</span>
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">✕</div>
+      </div>
+    </div>
+
+    <!-- Menu bar -->
+    <div class="win-menubar">
+      <span>File</span>
+      <span>Edit</span>
+      <span>View</span>
+      <span>Tools</span>
+      <span>Help</span>
+    </div>
+
+    <!-- Address bar -->
+    <div class="win-addressbar">
+      <label>Address:</label>
+      <div class="address-box">
+        <div class="address-folder-icon"></div>
+        C:\Users\Pavithra\Documents\Blogs
+      </div>
+      <div class="dropdown-arrow">▾</div>
+    </div>
+
+    <!-- Body -->
+    <div class="win-body">
+
+      <!-- Sidebar -->
+      <div class="win-sidebar">
+        <div class="sidebar-item">
+          <div class="sidebar-icon">
+            <svg width="16" height="14" viewBox="0 0 16 14"><rect x="0" y="2" width="14" height="12" rx="1" fill="#5b9bd5"/><rect x="1" y="3" width="12" height="2" fill="#fff" opacity="0.5"/></svg>
+          </div>
+          Desktop
+        </div>
+        <div class="sidebar-item">
+          <div class="sidebar-icon">
+            <svg width="14" height="16" viewBox="0 0 14 16"><rect x="1" y="0" width="10" height="13" rx="1" fill="#fffde7" stroke="#bba" stroke-width="1"/><line x1="3" y1="4" x2="9" y2="4" stroke="#bba" stroke-width="1"/><line x1="3" y1="7" x2="9" y2="7" stroke="#bba" stroke-width="1"/><line x1="3" y1="10" x2="7" y2="10" stroke="#bba" stroke-width="1"/></svg>
+          </div>
+          Documents
+        </div>
+        <div class="sidebar-item active">
+          <div class="sidebar-icon">
+            <svg width="16" height="13" viewBox="0 0 16 13"><path d="M0 3 H6 L8 1 H16 V11 H0 Z" fill="#ffc107"/><path d="M0 4 H16 V11 H0 Z" fill="#ffd740"/></svg>
+          </div>
+          Blog Archive
+        </div>
+      </div>
+
+      <!-- File list -->
+      <div class="win-filelist" id="file-list">
+        <!-- injected by JS -->
+      </div>
+
+    </div>
+
+    <div class="win-scrollbar-h"></div>
+  </div>
+</div>
+
+<!-- Post overlay -->
+<div class="post-overlay" id="post-overlay">
+  <div class="post-window">
+    <div class="post-titlebar">
+      <span class="post-title-left" id="post-window-title">post.txt — Notepad</span>
+      <div class="post-close" id="post-close">✕</div>
+    </div>
+    <div class="post-body" id="post-body-content">
+    </div>
+  </div>
+</div>
+
+<script>
+// ── cursor ──
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+  spawnGlitter(e.clientX, e.clientY);
+});
+document.addEventListener('mousedown', () => {
+  cursor.style.transform = 'translate(-50%,-50%) scale(1.6)';
+  cursor.style.background = '#fff';
+});
+document.addEventListener('mouseup', () => {
+  cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+  cursor.style.background = '#ff69b4';
+});
+
+const COLORS = ['#ff69b4','#ffb3d9','#fff','#ffd700','#ff1493','#ffe0f0','#c084fc'];
+const SHAPES = ['✦','✧','·','*','⋆'];
+let lastGlitter = 0;
+function spawnGlitter(x, y) {
+  const now = Date.now();
+  if (now - lastGlitter < 30) return;
+  lastGlitter = now;
+  for (let i = 0; i < 2; i++) {
+    const el = document.createElement('div');
+    el.classList.add('glitter');
+    const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    const dx = (Math.random() - 0.5) * 30;
+    const dy = (Math.random() - 0.5) * 30;
+    el.textContent = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+    el.style.cssText = `
+      left:${x}px; top:${y}px;
+      font-size:${9 + Math.random()*8}px;
+      color:${color}; text-shadow:0 0 6px ${color};
+      background:transparent; width:auto; height:auto; border-radius:0;
+      --dx:${dx}px; --dy:${dy}px;
+      animation-duration:${0.5 + Math.random()*0.4}s;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 900);
+  }
+}
+
+// ── blog data ──
+const posts = [
+  {
+    file: "why_i_design.txt",
+    title: "Why I Design",
+    date: "03/15/2025",
+    tags: ["design", "personal"],
+    content: `<h2>Why I Design</h2>
+      <span class="post-date">03/15/2025 — Text Document</span>
+      <div class="post-tags"><span class="post-tag">design</span><span class="post-tag">personal</span></div>
+      <p>Design, for me, has always been about making people feel something. Not just solving a problem — but solving it in a way that makes someone smile, pause, or feel understood.</p>
+      <p>I remember the first time I redesigned a school project poster and my teacher asked who made it. That moment hooked me. The idea that pixels and colours and whitespace could carry emotion felt like a superpower.</p>
+      <p>Every project since has been a small attempt to recreate that feeling. To build something that says: someone thought carefully about you when they made this.</p>`
+  },
+  {
+    file: "ux_lessons_learned.txt",
+    title: "UX Lessons From Year One",
+    date: "02/28/2025",
+    tags: ["ux", "learnings"],
+    content: `<h2>UX Lessons From Year One</h2>
+      <span class="post-date">02/28/2025 — Text Document</span>
+      <div class="post-tags"><span class="post-tag">ux</span><span class="post-tag">learnings</span></div>
+      <p>Year one of seriously studying UX taught me more than any tutorial ever could. The biggest lesson: users are not you.</p>
+      <p>I kept designing for myself — for what I'd find intuitive — and kept getting surprised when real people took completely different paths. Testing early, even with just two or three people, changed everything.</p>
+      <p>The other lesson: constraints are creative fuel. A tight deadline or a limited colour palette forces you to make actual decisions instead of exploring forever. Ship the thing. Iterate after.</p>`
+  },
+  {
+    file: "building_in_public.txt",
+    title: "Building In Public",
+    date: "02/10/2025",
+    tags: ["process", "portfolio"],
+    content: `<h2>Building In Public</h2>
+      <span class="post-date">02/10/2025 — Text Document</span>
+      <div class="post-tags"><span class="post-tag">process</span><span class="post-tag">portfolio</span></div>
+      <p>This portfolio itself is an experiment in building in public. I started with a Gemini-generated mockup and a vague idea. The process of translating that design into real code has been humbling and exciting in equal measure.</p>
+      <p>The pixel aesthetic isn't just decoration — it's a statement. I grew up playing games, and that world taught me about feedback loops, clear affordances, and the joy of discovering hidden things. I want my work to carry some of that energy.</p>
+      <p>More pages incoming. More posts incoming. The archive grows.</p>`
+  },
+  {
+    file: "colour_theory_notes.txt",
+    title: "Colour Theory, Practically",
+    date: "01/22/2025",
+    tags: ["design", "theory"],
+    content: `<h2>Colour Theory, Practically</h2>
+      <span class="post-date">01/22/2025 — Text Document</span>
+      <div class="post-tags"><span class="post-tag">design</span><span class="post-tag">theory</span></div>
+      <p>Colour theory sounds academic until you're staring at two shades of pink wondering why one feels warm and the other feels cold. Then it becomes survival.</p>
+      <p>The most practical thing I've learned: pick one accent colour and use it sparingly. Everything else should either support it or stay out of the way. The moment you add a second accent, you start a negotiation you rarely win.</p>
+      <p>Also: dark backgrounds make colours pop in a way light backgrounds never do. High contrast isn't just accessibility — it's drama.</p>`
+  },
+  {
+    file: "figma_shortcuts.txt",
+    title: "Figma Shortcuts I Wish I Knew Earlier",
+    date: "01/05/2025",
+    tags: ["tools", "figma"],
+    content: `<h2>Figma Shortcuts I Wish I Knew Earlier</h2>
+      <span class="post-date">01/05/2025 — Text Document</span>
+      <div class="post-tags"><span class="post-tag">tools</span><span class="post-tag">figma</span></div>
+      <p>K — scale tool. I resized elements manually for months before discovering this. It scales proportionally from the centre. Life changing.</p>
+      <p>Ctrl+G then Ctrl+Alt+G — group, then frame from group. Your components will thank you.</p>
+      <p>Option+drag — duplicate in place. Stop copy-pasting.</p>
+      <p>Shift+A on a frame — auto layout. If you're not using auto layout, your designs will break the moment someone changes the copy. Use it everywhere.</p>`
+  },
+  {
+    file: "on_aesthetic_risk.txt",
+    title: "On Taking Aesthetic Risks",
+    date: "12/18/2024",
+    tags: ["design", "personal"],
+    content: `<h2>On Taking Aesthetic Risks</h2>
+      <span class="post-date">12/18/2024 — Text Document</span>
+      <div class="post-tags"><span class="post-tag">design</span><span class="post-tag">personal</span></div>
+      <p>Most portfolio sites look the same. Minimal, dark, a gradient accent, some case studies. Clean. Safe. Forgettable.</p>
+      <p>I wanted mine to feel like me — which is chaotic, colourful, nostalgic about things I'm technically too young to be nostalgic about (Windows XP, pixel games, dial-up aesthetics).</p>
+      <p>The risk of looking "unprofessional" is real. But the risk of being invisible is worse. I'd rather someone remember the pink pixel portfolio than forget the perfectly adequate minimal one.</p>`
+  },
+];
+
+// ── render file list ──
+const list = document.getElementById('file-list');
+posts.forEach((post, i) => {
+  const row = document.createElement('a');
+  row.className = 'file-row';
+  row.href = '#';
+  row.innerHTML = `
+    <div class="file-icon">
+      <div class="file-lines">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <span class="file-name">${post.file}</span>
+    ${post.tags.map(t => `<span class="file-tag">${t}</span>`).join('')}
+    <span class="file-meta">${post.date} &nbsp;|&nbsp; Text Document</span>
+  `;
+  row.addEventListener('click', e => { e.preventDefault(); openPost(post); });
+  list.appendChild(row);
+});
+
+// ── open post ──
+const overlay  = document.getElementById('post-overlay');
+const postBody = document.getElementById('post-body-content');
+const postWinTitle = document.getElementById('post-window-title');
+const closeBtn = document.getElementById('post-close');
+
+function openPost(post) {
+  postWinTitle.textContent = `${post.file} — Notepad`;
+  postBody.innerHTML = post.content;
+  overlay.classList.add('open');
+}
+closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
+overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+</script>
+</body>
+</html>
