@@ -230,6 +230,7 @@ body::before {
 
 /* page bottom spacer */
 .spacer { height: 60px; }
+.connectors,.retro-win{display:none !important;}
 @media (max-width:768px){
 
   .connectors{
@@ -281,6 +282,91 @@ body::before {
   .win-skills{ order:3; }
   .win-extra{ order:4; }
 
+}
+
+
+/* TABBED PROFILE SYSTEM */
+.profile-layout{
+  position:relative;
+  z-index:10;
+  max-width:950px;
+  margin:380px auto 80px;
+  display:flex;
+  gap:24px;
+  align-items:flex-start;
+  padding:0 20px;
+}
+.profile-menu{
+  width:240px;
+}
+.menu-btn{
+  width:100%;
+  margin-bottom:12px;
+  border:2px solid var(--win-border);
+  background:#f9c8e0;
+  padding:14px;
+  font-family:'Press Start 2P', monospace;
+  font-size:10px;
+  cursor:pointer !important;
+}
+.menu-btn.active{
+  background:#ffd700;
+}
+.profile-panel{
+  flex:1;
+  border:2px solid var(--win-border);
+  background:#fff9fd;
+  min-height:420px;
+  box-shadow:0 0 20px rgba(255,45,155,.35);
+}
+.panel-title{
+  background:linear-gradient(90deg,#c2185b,#e91e8c,#c2185b);
+  color:white;
+  padding:10px;
+  font-family:'Press Start 2P', monospace;
+  font-size:10px;
+}
+.panel-content{
+  padding:24px;
+  font-family:'VT323', monospace;
+  font-size:30px;
+  line-height:1.7;
+}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+/* ── clouds ── */
+.cloud {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+.cloud img{
+  width:100%;
+  height:auto;
+  display:block;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+}
+
+.cloud{
+  opacity:.75;
+  filter:
+    drop-shadow(0 0 12px rgba(255,182,219,.25));}
+
+@media(max-width:768px){
+ .profile-layout{
+   margin:20px auto 40px;
+   flex-direction:column;
+   max-width:95vw;
+   
+ }
+  .cloud{
+    display:none;
+  }
+ .profile-menu{width:100%;}
+ .profile-panel{width:100%; min-height:340px;}
+ .panel-content{font-size:26px;}
 }
 
 </style>
@@ -363,17 +449,16 @@ body::before {
   <!-- Window: Hello !! -->
   <div class="retro-win win-hello" id="win-hello">
     <div class="win-titlebar">
-      <span class="win-title-text">Hello !!</span>
+      <span class="win-title-text">hello !!</span>
       <div class="win-controls">
         <div class="win-btn">_</div><div class="win-btn">□</div><div class="win-btn close">✕</div>
       </div>
     </div>
     <div class="win-body">
-      <p><b>Player:</b> Pavithra</p>
-      <p><b>Role:</b> Your Role Here</p>
-      <p><b>Mission:</b> Your mission statement here</p>
-      <p><b>Status:</b> Ready to explore, build, and win.</p>
-      <p>Let's start the game!</p>
+      <p><b>player:</b> pavithra nair</p>
+      <p><b>role:</b> cs student, builder of silly little projects</p>
+      <p><b>mission:</b> training neural nets, collecting side quests, and turning caffeine into code</p>
+      <p><b>status:</b> somewhere between a research paper, a spotify playlist, and a git commit</p>
     </div>
     <div class="win-scrollbar"></div>
   </div>
@@ -381,16 +466,16 @@ body::before {
   <!-- Window: Training Log -->
   <div class="retro-win win-training" id="win-training">
     <div class="win-titlebar">
-      <span class="win-title-text">Training Log</span>
+      <span class="win-title-text">training log</span>
       <div class="win-controls">
         <div class="win-btn">_</div><div class="win-btn">□</div><div class="win-btn close">✕</div>
       </div>
     </div>
     <div class="win-body">
-      <p>Your Degree</p>
-      <p>Your University</p>
-      <p>Your City</p>
-      <p>20XX–20XX</p>
+     <p>- b.tech computer science engineering</p>
+        <p>- amrita vishwa vidyapeetham</p>
+        <p>- amritapuri, kerala, india</p>
+        <p>- 2023–2027</p>
     </div>
     <div class="win-scrollbar"></div>
   </div>
@@ -398,20 +483,20 @@ body::before {
   <!-- Window: Skills Mastery -->
   <div class="retro-win win-skills" id="win-skills">
     <div class="win-titlebar">
-      <span class="win-title-text">Skills Mastery</span>
+      <span class="win-title-text">skills mastery</span>
       <div class="win-controls">
         <div class="win-btn">_</div><div class="win-btn">□</div><div class="win-btn close">✕</div>
       </div>
     </div>
     <div class="win-body">
-      <p>*Skill One</p>
-      <p>*Skill Two</p>
-      <p>*Skill Three</p>
-      <p>*Skill Four</p>
-      <p>*Skill Five</p>
-      <p>*Skill Six</p>
-      <p>*Skill Seven</p>
-      <p>*Skill Eight</p>
+      <p>* machine learning</p>
+        <p>* computer vision</p>
+        <p>* full-stack development</p>
+        <p>* react.js</p>
+        <p>* flask & api systems</p>
+        <p>* flutter & firebase</p>
+        <p>* data structures & algorithms</p>
+        <p>* ai & nlp</p>
     </div>
     <div class="win-scrollbar"></div>
   </div>
@@ -419,22 +504,92 @@ body::before {
   <!-- Window: Extra / Weapons -->
   <div class="retro-win win-extra" id="win-extra">
     <div class="win-titlebar">
-      <span class="win-title-text">Weapons Mastery</span>
+      <span class="win-title-text">weapons mastery</span>
       <div class="win-controls">
         <div class="win-btn">_</div><div class="win-btn">□</div><div class="win-btn close">✕</div>
       </div>
     </div>
     <div class="win-body">
-      <p>*Figma</p>
-      <p>*Adobe XD</p>
-      <p>*Illustrator</p>
-      <p>*VS Code</p>
-      <p>*Blender</p>
+     <p>* vscode</p>
+    <p>* git & github</p>
+    <p>* react.js</p>
+    <p>* flask</p>
+    <p>* flutter</p>
+    <p>* firebase</p>
+    <p>* tensorflow</p>
+    <p>* opencv</p>
     </div>
     <div class="win-scrollbar"></div>
   </div>
 
-  <div class="spacer"></div>
+  
+<div class="profile-layout">
+  <div class="profile-menu">
+    <button class="menu-btn active" data-tab="hello">> hello!</button>
+    <button class="menu-btn" data-tab="training">training log</button>
+    <button class="menu-btn" data-tab="skills">skills mastery</button>
+    <button class="menu-btn" data-tab="weapons">weapons mastery</button>
+  </div>
+
+  <div class="profile-panel">
+    <div class="panel-title">player profile</div>
+    <div class="panel-content">
+
+      <div class="tab-content active" id="hello">
+        <p><b>player:</b> pavithra nair</p>
+        <p><b>role:</b> cs student, builder of silly little projects</p>
+        <p><b>mission:</b> training neural nets, collecting side quests, and turning caffeine into code</p>
+        <p><b>status:</b> somewhere between a research paper, a spotify playlist, and a git commit</p>
+      </div>
+
+      <div class="tab-content" id="training">
+        <p>- b.tech computer science engineering</p>
+        <p>- amrita vishwa vidyapeetham</p>
+        <p>- amritapuri, kerala, india</p>
+        <p>- 2023–2027</p>
+      </div>
+
+      <div class="tab-content" id="skills">
+        <p>* machine learning</p>
+        <p>* computer vision</p>
+        <p>* full-stack development</p>
+        <p>* react.js</p>
+        <p>* flask & api systems</p>
+        <p>* flutter & firebase</p>
+        <p>* data structures & algorithms</p>
+        <p>* ai & nlp</p>
+      </div>
+
+      <div class="tab-content" id="weapons">
+        <p>* vscode</p>
+        <p>* git & github</p>
+        <p>* react.js</p>
+        <p>* flask</p>
+        <p>* flutter</p>
+        <p>* firebase</p>
+        <p>* tensorflow</p>
+        <p>* opencv</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="spacer"></div>
+<div class="cloud"
+     style="top:14%; left:4%; width:190px; animation: float-a 9s ease-in-out infinite;">
+  <img src="pink-cloud.png" alt="">
+</div>
+
+<div class="cloud"
+     style="top:18%; right:4%; width:170px; animation: float-b 11s ease-in-out infinite;">
+  <img src="pink-cloud.png" alt="">
+</div>
+
+<div class="cloud"
+     style="bottom:12%; right:5%; width:150px; animation: float-a 10s ease-in-out infinite;">
+  <img src="pink-cloud.png" alt="">
+</div>
 </div>
 
 <script>
@@ -637,6 +792,16 @@ const connections = [
 
 window.addEventListener('load', () => { setTimeout(drawLines, 100); });
 window.addEventListener('resize', drawLines);
+
+document.querySelectorAll('.menu-btn').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+   document.querySelectorAll('.menu-btn').forEach(b=>b.classList.remove('active'));
+   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+   btn.classList.add('active');
+   document.getElementById(btn.dataset.tab).classList.add('active');
+ });
+});
+
 </script>
 </body>
 </html>
